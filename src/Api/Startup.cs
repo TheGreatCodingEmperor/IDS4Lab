@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,21 +25,18 @@ namespace Api {
         public void ConfigureServices (IServiceCollection services) {
 
             services.AddControllers ();
-            services.AddSwaggerGen (c => {
-                c.SwaggerDoc ("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
-            });
+
             services.AddAuthentication ("Bearer")
                 .AddJwtBearer ("Bearer", options => {
                     options.Authority = "https://localhost:5001";
+
                     options.TokenValidationParameters = new TokenValidationParameters {
                         ValidateAudience = false
                     };
                 });
-            services.AddAuthorization (options => {
-                options.AddPolicy ("ApiScope", policy => {
-                    policy.RequireAuthenticatedUser ();
-                    policy.RequireClaim ("scope", "api1");
-                });
+
+            services.AddSwaggerGen (c => {
+                c.SwaggerDoc ("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
             });
         }
 
@@ -60,8 +56,7 @@ namespace Api {
             app.UseAuthorization ();
 
             app.UseEndpoints (endpoints => {
-                endpoints.MapControllers ()
-                    .RequireAuthorization ("ApiScope");
+                endpoints.MapControllers ();
             });
         }
     }
