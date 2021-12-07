@@ -34,12 +34,19 @@ namespace IdentityServerHost.Quickstart.UI
                         Password = "alice",
                         Claims =
                         {
-                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
+                            new Claim(JwtClaimTypes.Role, "admin"),
+                            new Claim(JwtClaimTypes.Role, "user"),
+                            new Claim("test", "custom alice"),
+
                             new Claim(JwtClaimTypes.GivenName, "Alice"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
+                            
                             new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
                             new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+
                             new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+
                             new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address), IdentityServerConstants.ClaimValueTypes.Json)
                         }
                     },
@@ -50,6 +57,9 @@ namespace IdentityServerHost.Quickstart.UI
                         Password = "bob",
                         Claims =
                         {
+                            new Claim(JwtClaimTypes.Role, "user"),
+                            new Claim("test", "custom Bob"),
+
                             new Claim(JwtClaimTypes.Name, "Bob Smith"),
                             new Claim(JwtClaimTypes.GivenName, "Bob"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),

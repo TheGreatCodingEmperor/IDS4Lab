@@ -10,12 +10,32 @@ namespace IdentityServer {
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[] {
                 new IdentityResources.OpenId (),
-                new IdentityResources.Profile ()
+                new IdentityResources.Profile (),
+                new IdentityResources.Email (),
+                // new IdentityResource {
+                // Name = "custom",
+                // UserClaims = new List<string> { "role", "test" },
+                // }
             };
+
+        public static IEnumerable<ApiResource> GetApiResources () {
+            return new [] {
+                new ApiResource {
+                    Name = "api1",
+                        DisplayName = "API #1",
+                        Description = "Allow the application to access API #1 on your behalf",
+                        Scopes = new List<string> { "api1.read", "api1.write" },
+                        ApiSecrets = new List<Secret> { new Secret ("ScopeSecret".Sha256 ()) }, // change me!
+                        UserClaims = new List<string> { "role", "test","website" },
+                
+                        }
+            };
+        }
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[] {
-                new ApiScope ("api1", "My API")
+                new ApiScope ("api1.read", "Read Access to API #1"),
+                new ApiScope ("api1.write", "Write Access to API #1")
             };
 
         public static IEnumerable<Client> Clients =>
@@ -32,24 +52,52 @@ namespace IdentityServer {
                 },
 
                 // scopes that client has access to
-                AllowedScopes = { "api1" }
+                AllowedScopes = { "api1.read" }
                 },
+
                 // interactive ASP.NET Core MVC client
                 new Client {
                 ClientId = "mvc",
                 ClientSecrets = { new Secret ("secret".Sha256 ()) },
 
-                AllowedGrantTypes = GrantTypes.Code,
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                 // where to redirect to after login
                 RedirectUris = { "https://localhost:5002/signin-oidc" },
+                RequirePkce = false,
 
                 // where to redirect to after logout
                 PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
                 AllowedScopes = new List<string> {
                 IdentityServerConstants.StandardScopes.OpenId,
-                IdentityServerConstants.StandardScopes.Profile
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
+                IdentityServerConstants.StandardScopes.Address,
+
+                "api1.read",
+                }
+                }
+
+                ,
+                // interactive ASP.NET Core MVC client
+                new Client {
+                ClientId = "angular",
+                ClientSecrets = { new Secret ("secret".Sha256 ()) },
+
+                AllowedGrantTypes = GrantTypes.Code,
+
+                // where to redirect to after login
+                RedirectUris = { "https://localhost:5005/Identity/Token" },
+                RequirePkce = false,
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris = { "https://localhost:5005/signout-callback-oidc" },
+
+                AllowedScopes = new List<string> {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email
                 }
                 }
             };
