@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
+using IdentityServer4.AccessTokenValidation;
 
 namespace Api.Controllers {
     [Route ("identity")]
-    [Authorize]
+    [Authorize (AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
     [ApiController]
     public class IdentityController : ControllerBase {
         private readonly ILogger<IdentityController> _logger;

@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityServer4.Services;
 using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer {
     public class Startup {
@@ -17,6 +19,16 @@ namespace IdentityServer {
 
         public void ConfigureServices (IServiceCollection services) {
             // uncomment, if you want to add an MVC-based UI
+
+            services.AddCors (options => {
+                options.AddPolicy ("AllowedCorsOrigins", builder => {
+                    builder
+                        .AllowAnyOrigin ()
+                        .AllowAnyHeader ()
+                        .AllowAnyMethod ();
+                });
+            });
+
             services.AddControllersWithViews ();
 
             var builder = services.AddIdentityServer (options => {
@@ -34,6 +46,8 @@ namespace IdentityServer {
         }
 
         public void Configure (IApplicationBuilder app) {
+            app.UseCors ("AllowedCorsOrigins");
+
             if (Environment.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
             }
