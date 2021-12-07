@@ -60,6 +60,28 @@ namespace IdentityServer {
                 ClientId = "mvc",
                 ClientSecrets = { new Secret ("secret".Sha256 ()) },
 
+                AllowedGrantTypes = GrantTypes.Code,
+
+                // where to redirect to after login
+                RedirectUris = { "https://localhost:5002/signin-oidc" },
+                RequirePkce = false,
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                AllowedScopes = new List<string> {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
+                IdentityServerConstants.StandardScopes.Address,
+
+                "api1.read",
+                }
+                },
+                new Client {
+                ClientId = "mvc2",
+                ClientSecrets = { new Secret ("secret".Sha256 ()) },
+
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                 // where to redirect to after login
@@ -78,6 +100,7 @@ namespace IdentityServer {
                 "api1.read",
                 }
                 }
+
 
                 ,
                 // interactive ASP.NET Core MVC client
